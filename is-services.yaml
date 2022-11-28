@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sag-pp-is-svc-h
+  labels:
+    app: sag-pp-is-svc-h
+  namespace: nsp-sag-pp
+spec:
+  selector:
+    app: sag-pp-is-cluster
+  clusterIP: None
+  ports:
+    - port: 5555
+      name: primary-port
+    - port: 5543
+      name: secondary-port
+    - port: 9999
+      name: diagnostic-port
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: sag-pp-is-svc-nodeport
+  labels:
+    app: sag-pp-is-svc-nodeport
+  namespace: nsp-sag-pp
+spec:
+  type: NodePort
+  sessionAffinity: ClientIP
+  selector:
+    app: sag-pp-is-cluster
+  ports:
+    - name: is-port
+      port: 5555
+      targetPort: 5555
+      nodePort: 30017
+    - name: comm-port
+      port: 5543
+      targetPort: 5543
+      nodePort: 30018
+    - name: diagnostic-port
+      port: 9999
+      targetPort: 9999
+      nodePort: 30019

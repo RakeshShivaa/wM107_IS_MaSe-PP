@@ -1,0 +1,5 @@
+resources:
+  - is-configmap.yaml
+  - is-license-configmap.yaml
+  - is-services.yaml
+  - is-statefulsets.yaml
