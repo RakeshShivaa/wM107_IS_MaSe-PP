@@ -1,0 +1,156 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata: 
+  name: sag-pp-is-cluster
+  labels:
+    app: sag-pp-is-cluster
+  namespace:  nsp-sag-pp
+spec:
+  serviceName: sag-pp-is-svc-h
+  replicas: 1
+  selector:
+    matchLabels:
+      app: sag-pp-is-cluster
+  template:
+    metadata:
+      labels:
+        app: sag-pp-is-cluster
+    spec:
+      terminationGracePeriodSeconds: 30
+      containers:
+      - name: sag-pp-is-server
+        image: masedocker2021/sag-pp-is107:v1.2
+        # imagePullPolicy: Never
+        ports:
+        - name: primary-port
+          containerPort: 5555
+        - name: ssl-port
+          containerPort: 5543
+        - name: diagnostic-port
+          containerPort: 9999
+        resources:
+          requests:
+            cpu: "0.1"
+            memory: "600Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
+        readinessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /invoke/wm.server/ping
+            port: 5555
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          failureThreshold: 6
+        livenessProbe:
+          httpGet:
+            scheme: HTTP
+            path: /invoke/wm.server/ping
+            port: 5555
+          initialDelaySeconds: 60
+          periodSeconds: 60
+          failureThreshold: 6
+        volumeMounts:
+        - name: is-license
+          mountPath: /tmp/licenseKey.xml
+          subPath: is-licensekey.xml
+          readOnly: false
+        - name: tsa-license
+          mountPath: /opt/softwareag/common/conf/terracotta-license.key
+          subPath: terracotta-license.key
+          readOnly: false
+        - name: custom-wrapper
+          mountPath: /opt/softwareag/profiles/IS_default/configuration/custom_wrapper.conf
+          subPath: custom_wrapper.conf
+          readOnly: false
+        - name: app-prop
+          mountPath: /opt/softwareag/IntegrationServer/application.properties
+          subPath: application.properties
+          readOnly: false
+        - name: jndi-prop
+          mountPath: /tmp/jndi_DEFAULT_IS_JNDI_PROVIDER.properties
+          subPath: jndi_DEFAULT_IS_JNDI_PROVIDER.properties
+          readOnly: false
+        - name: messaging-prop
+          mountPath: /tmp/messaging.cnf
+          subPath: messaging.cnf
+          readOnly: false
+        - name: jms-prop
+          mountPath: /tmp/jms.cnf
+          subPath: jms.cnf
+          readOnly: false
+        - name: is-csq
+          mountPath: /opt/softwareag/IntegrationServer/instances/default/db
+          readOnly: false
+        command:
+        - /bin/sh
+        - -c
+        - |
+         cp /tmp/jndi_DEFAULT_IS_JNDI_PROVIDER.properties  /opt/softwareag/IntegrationServer/instances/default/config/jndi/jndi_DEFAULT_IS_JNDI_PROVIDER.properties
+         cp /tmp/messaging.cnf /opt/softwareag/IntegrationServer/instances/default/config/messaging.cnf
+         cp /tmp/licenseKey.xml /opt/softwareag/IntegrationServer/instances/default/config/licenseKey.xml
+         cp /tmp/jms.cnf  /opt/softwareag/IntegrationServer/instances/default/config/jms.cnf
+         /opt/softwareag/IntegrationServer/bin/startContainer.sh
+      volumes:
+      - name: is-license
+        configMap:
+          name: sag-pp-is-license-config
+          items:
+          - key: is-licensekey.xml
+            path: is-licensekey.xml
+          defaultMode: 0777
+      - name: tsa-license
+        configMap:
+          name: sag-pp-is-license-config
+          items:
+          - key: terracotta-license.key
+            path: terracotta-license.key
+          defaultMode: 0777
+      - name: custom-wrapper
+        configMap:
+          name: sag-pp-is-config
+          items:
+          - key: custom_wrapper.conf
+            path: custom_wrapper.conf
+          defaultMode: 0777
+      - name: app-prop
+        configMap:
+          name: sag-pp-is-config
+          items:
+          - key: application.properties
+            path: application.properties
+          defaultMode: 0777
+      - name: jndi-prop
+        configMap:
+          name: sag-pp-is-config
+          items:
+          - key: jndi_DEFAULT_IS_JNDI_PROVIDER.properties
+            path: jndi_DEFAULT_IS_JNDI_PROVIDER.properties
+          defaultMode: 0777
+      - name: messaging-prop
+        configMap:
+          name: sag-pp-is-config
+          items:
+          - key: messaging.cnf
+            path: messaging.cnf
+          defaultMode: 0777
+      - name: jms-prop
+        configMap:
+          name: sag-pp-is-config
+          items:
+          - key: jms.cnf
+            path: jms.cnf
+          defaultMode: 0777
+
+  volumeClaimTemplates:
+  - metadata:
+      name: is-csq
+    spec:
+      storageClassName: standard
+      accessModes: 
+      - ReadWriteMany
+      resources:
+        requests:
+          storage: "1Gi"
+

@@ -1,0 +1,237 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: sag-pp-is-config
+  namespace: nsp-sag-pp
+data:
+
+  application.properties: |
+    #Sample Generated Template
+    #Fri Oct 08 14:42:43 IST 2021
+    jdbc.MWSUser.dbURL=jdbc\:wm\:oracle\://wm-docker-k8s-oracle-se2-db.cjdskb4ewhrg.us-east-1.rds.amazonaws.com\:1521;ServiceName\=ORACLEDB_A
+    jdbc.MWSUser.password={AES}MbYmPezV4NS3Ta31QMtyUQ==
+    jdbc.MWSUser.userid=webm107mws_pp_demo
+    jdbc.ISInternal.dbURL=jdbc\:wm\:oracle\://wm-docker-k8s-oracle-se2-db.cjdskb4ewhrg.us-east-1.rds.amazonaws.com\:1521;ServiceName\=ORACLEDB_A
+    jdbc.ISInternal.password={AES}MbYmPezV4NS3Ta31QMtyUQ==
+    jdbc.ISInternal.userid=webm107is_pp_demo
+    settings.watt.server.cluster.aware=true
+    settings.watt.server.cluster.name=IS_TSA_Cluster
+    settings.watt.server.cluster.tsaURLs=sag-pp-tsa-cluster-0.sag-pp-tsa-svc-h.nsp-sag-pp.svc.cluster.local\:9510
+    jms.DEFAULT_IS_JMS_CONNECTION.clientID=IS_JMS_CLIENT
+    jms.PE_NONTRANSACTIONAL_ALIAS.clientID=IS_PE
+    jndi.DEFAULT_IS_JNDI_PROVIDER.providerURL=nsp\://sag-pp-um-svc.nsp-sag-pp.svc.cluster.local\:9000
+    messaging.IS_UM_CONNECTION.CLIENTPREFIX=IS
+    messaging.IS_UM_CONNECTION.type=UM
+    messaging.IS_UM_CONNECTION.url=nsp\://sag-pp-um-svc.nsp-sag-pp.svc.cluster.local\:9000
+    settings.watt.server.compile=/opt/softwareag/jvm/jvm/bin/javac -classpath {0} -d {1} {2}
+    settings.watt.server.auth.samlResolver=http://sag-pp-mws-svc-h.nsp-sag-pp.svc.cluster.local\:8585/services/SAML
+    settings.watt.server.threadPool=1000
+    settings.watt.net.jsse.client.disabledProtocols=SSLv2Hello,SSLv3,TLSv1,TLSv1.1
+    settings.watt.net.jsse.server.disabledProtocols=SSLv2Hello,SSLv3,TLSv1,TLSv1.1
+    user.Administrator.password={AES}Uqhv+pIqGq7ZlYFG0jqSWA==
+    user.Developer.password={AES}Uqhv+pIqGq7ZlYFG0jqSWA==
+    user.Replicator.password={AES}Uqhv+pIqGq7ZlYFG0jqSWA==
+    truststore.DEFAULT_JVM_TRUSTSTORE.ksLocation=/opt/softwareag/jvm/jvm/jre/lib/security/cacerts
+    truststore.DEFAULT_JVM_TRUSTSTORE.ksPassword={AES}z/+xVlzI9T/Dfo7Su4lrCQ==
+  custom_wrapper.conf: |
+    #encoding=UTF-8
+    wrapper.app.parameter.2=4
+    wrapper.app.parameter.5=-service
+    wrapper.app.parameter.6=sagis107
+    wrapper.java.additional.100=-server
+    wrapper.java.additional.101=-Dorg.apache.xml.dtm.DTMManager=org.apache.xml.dtm.ref.DTMManagerDefault
+    wrapper.java.additional.102=-Djavax.xml.xpath.XPathFactory:http://java.sun.com/jaxp/xpath/dom=com.sun.org.apache.xpath.internal.jaxp.XPathFactoryImpl
+    wrapper.java.additional.103=-Dcom.webmethods.sc.auditing.Use80TableFormat=true
+    wrapper.java.additional.104=-Dsun.lang.ClassLoader.allowArraySyntax=true
+    wrapper.java.additional.105=-XX:+UseOpenJSSE
+    wrapper.java.additional.201=-DWM_HOME=/opt/softwareag
+    wrapper.java.additional.202=-Dwatt.server.prepend.classes=/opt/softwareag/common/lib/wm-converters.jar
+    wrapper.java.additional.203=-Dwatt.server.append.classes=
+    wrapper.java.additional.204=-Dlog4j.configurationFile="/opt/softwareag/profiles/IS_default/configuration/logging/log4j2.properties,.tc.custom.log4j2.properties"
+    wrapper.java.additional.204.stripquotes=TRUE
+    wrapper.java.additional.301=-Dorg.tanukisoftware.wrapper.WrapperStartStopApp.passthroughMode=START
+    wrapper.java.additional.302=-Djava.awt.headless=true
+    wrapper.java.additional.303=-DLog4jContextSelector=org.apache.logging.log4j.core.selector.BasicContextSelector
+    wrapper.java.classpath.3=/opt/softwareag/common/lib/wm-converters.jar
+    wrapper.java.initmemory=512
+    wrapper.java.library.path.11=/opt/softwareag/IntegrationServer/instances/default/lib
+    wrapper.java.library.path.append_system_path=TRUE
+    wrapper.java.maxmemory=1024
+    wrapper.jvm_exit.timeout=300
+    wrapper.on_exit.42=RESTART
+    wrapper.ping.timeout=300
+    wrapper.restart.reload_configuration=TRUE
+    wrapper.shutdown.timeout=300
+    wrapper.single_invocation=TRUE
+    wrapper.working.dir=/opt/softwareag/IntegrationServer/instances/default
+    wrapper.java.additional.106=-Djava.security.properties=config/security/webm_override_java.
+    
+  jndi_DEFAULT_IS_JNDI_PROVIDER.properties: |
+    #JNDI properties for DEFAULT_IS_JNDI_PROVIDER
+    #Sat Nov 06 16:41:54 CET 2021
+    java.naming.factory.initial=com.pcbsys.nirvana.nSpace.NirvanaContextFactory
+    java.naming.provider.url=nsp\://sag-pp-um-svc.nsp-sag-pp.svc.cluster.local\:9000
+    is.jndiAlias.description=system generated JNDI provider alias
+
+  messaging.cnf: |
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <IDataXMLCoder version="1.0">
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <array name="Configuration" type="record" depth="1">
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="aliasName">IS_UM_CONNECTION</value>
+            <value name="description">system generated Universal Messaging connection alias</value>
+            <value name="CLIENTPREFIX">IS_UM</value>
+            <null name="user"/>
+            <value name="enabled">true</value>
+            <value name="csqSize">-1</value>
+            <value name="csqDrainInOrder">true</value>
+            <value name="type">UM</value>
+            <value name="aliasTypeDisplay">Universal Messaging</value>
+            <value name="transactionType">NONE</value>
+            <value name="systemGenerated">false</value>
+            <jboolean name="isClientPrefixShared">true</jboolean>
+            <value name="useCSQ">true</value>
+            <value name="_state">STARTED</value>
+            <value name="um_rname">nsp://sag-pp-um-svc.nsp-sag-pp.svc.cluster.local:9000</value>
+            <value name="um_tryAgainMaxAttempts">5</value>
+            <value name="um_publishWaitTime">30000</value>
+            <jboolean name="um_followTheMasterForPublish">true</jboolean>
+            <jboolean name="um_followTheMasterForSubscribe">true</jboolean>
+            <number name="um_loggingOutput" type="java.lang.Integer">0</number>
+            <jboolean name="um_producerMessageTracking">false</jboolean>
+            <jboolean name="um_consumerMessageTracking">false</jboolean>
+            <value name="um_producerIncludedStrings"></value>
+            <value name="um_consumerIncludedStrings"></value>
+            <jboolean name="enableRequestReply">true</jboolean>
+            <value name="clientAuthType">none</value>
+            <value name="trustStoreAlias"></value>
+          </record>
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="aliasName">IS_DES_CONNECTION</value>
+            <value name="description">system generated Digital Event Services connection alias</value>
+            <value name="CLIENTPREFIX">J_jRQtEolDEurgAVIwwwADXaZQs_</value>
+            <null name="user"/>
+            <value name="enabled">true</value>
+            <value name="csqSize">-1</value>
+            <value name="csqDrainInOrder">false</value>
+            <value name="type">DES</value>
+            <value name="aliasTypeDisplay">Digital Event Services</value>
+            <value name="transactionType">NONE</value>
+            <value name="systemGenerated">true</value>
+            <jboolean name="isClientPrefixShared">false</jboolean>
+            <value name="useCSQ">false</value>
+            <value name="_state">STARTED</value>
+          </record>
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="aliasName">IS_LOCAL_CONNECTION</value>
+            <value name="description">system generated local connection alias</value>
+            <value name="enabled">true</value>
+            <value name="type">LOCAL</value>
+            <value name="aliasTypeDisplay">Local</value>
+            <value name="systemGenerated">true</value>
+          </record>
+        </array>
+        <value name="defaultAlias">IS_UM_CONNECTION</value>
+      </record>
+    </IDataXMLCoder>
+
+
+  jms.cnf: |
+    <?xml version="1.0" encoding="UTF-8"?>
+
+    <IDataXMLCoder version="1.0">
+      <record javaclass="com.wm.data.ISMemDataImpl">
+        <array name="JMSConfiguration" type="record" depth="1">
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="aliasName">DEFAULT_IS_JMS_CONNECTION</value>
+            <value name="description">system generated JMS connection alias</value>
+            <value name="clientID">DEFAULT_IS_JMS_CLIENT</value>
+            <null name="user"/>
+            <value name="handle">wm.is.admin.jmsConnectionAlias.DEFAULT_IS_JMS_CONNECTION</value>
+            <value name="classLoader">INTEGRATION_SERVER</value>
+            <value name="enabled">true</value>
+            <value name="csqSize">-1</value>
+            <value name="csqDrainInOrder">true</value>
+            <value name="optTempQueueCreate">true</value>
+            <value name="transactionType">0</value>
+            <value name="systemGenerated">false</value>
+            <value name="manageDestinations">true</value>
+            <value name="allowNewConnectionPerTrigger">false</value>
+            <value name="producerCachingMode">0</value>
+            <value name="producerSessionPoolSize">0</value>
+            <value name="producerSessionPoolMinSize">0</value>
+            <value name="cacheProducersPoolSize">0</value>
+            <value name="cacheProducersPoolMinSize">0</value>
+            <value name="cacheProducersQueueList"></value>
+            <value name="cacheProducersTopicList"></value>
+            <number name="poolTimeout" type="java.lang.Integer">60000</number>
+            <number name="producerMaxRetryAttempts" type="java.lang.Long">0</number>
+            <number name="producerRetryInterval" type="java.lang.Long">0</number>
+            <jboolean name="allowReplyToConsumer">false</jboolean>
+            <value name="associationType">0</value>
+            <value name="jndi_jndiAliasName">DEFAULT_IS_JNDI_PROVIDER</value>
+            <value name="jndi_connectionFactoryLookupName">local_um</value>
+            <value name="jndi_connectionFactoryUpdateType">NONE</value>
+            <number name="jndi_connectionFactoryPollingInterval" type="java.lang.Integer">0</number>
+            <jboolean name="jndi_enableFollowTheMaster">true</jboolean>
+            <jboolean name="jndi_automaticallyCreateUMAdminObjects">false</jboolean>
+            <number name="um_loggingOutput" type="java.lang.Integer">0</number>
+            <jboolean name="um_producerMessageTracking">false</jboolean>
+            <jboolean name="um_consumerMessageTracking">false</jboolean>
+            <null name="um_producerIncludedStrings"/>
+            <null name="um_consumerIncludedStrings"/>
+            <value name="providerName">Universal Messaging</value>
+            <value name="providerVersion">10.7.0 Build 141030 September 23 2021</value>
+            <number name="providerMajorVersion" type="java.lang.Integer">10</number>
+            <number name="providerMinorVersion" type="java.lang.Integer">7</number>
+          </record>
+          <record javaclass="com.wm.data.ISMemDataImpl">
+            <value name="aliasName">PE_NONTRANSACTIONAL_ALIAS</value>
+            <value name="description">system generated JMS connection alias</value>
+            <value name="clientID">ISc7939ac7_ca27_4fbd_8ef3_9295bd96be21</value>
+            <null name="user"/>
+            <value name="handle">wm.is.admin.jmsConnectionAlias.PE_NONTRANSACTIONAL_ALIAS</value>
+            <value name="classLoader">INTEGRATION_SERVER</value>
+            <value name="enabled">true</value>
+            <value name="csqSize">-1</value>
+            <value name="csqDrainInOrder">true</value>
+            <value name="optTempQueueCreate">true</value>
+            <value name="transactionType">0</value>
+            <value name="systemGenerated">false</value>
+            <value name="manageDestinations">true</value>
+            <value name="allowNewConnectionPerTrigger">false</value>
+            <value name="producerCachingMode">0</value>
+            <value name="producerSessionPoolSize">0</value>
+            <value name="producerSessionPoolMinSize">0</value>
+            <value name="cacheProducersPoolSize">0</value>
+            <value name="cacheProducersPoolMinSize">0</value>
+            <value name="cacheProducersQueueList"></value>
+            <value name="cacheProducersTopicList"></value>
+            <number name="poolTimeout" type="java.lang.Integer">60000</number>
+            <number name="producerMaxRetryAttempts" type="java.lang.Long">0</number>
+            <number name="producerRetryInterval" type="java.lang.Long">0</number>
+            <jboolean name="allowReplyToConsumer">false</jboolean>
+            <value name="associationType">0</value>
+            <value name="jndi_jndiAliasName">DEFAULT_IS_JNDI_PROVIDER</value>
+            <value name="jndi_connectionFactoryLookupName">local_um</value>
+            <value name="jndi_connectionFactoryUpdateType">NONE</value>
+            <number name="jndi_connectionFactoryPollingInterval" type="java.lang.Integer">0</number>
+            <jboolean name="jndi_enableFollowTheMaster">true</jboolean>
+            <jboolean name="jndi_automaticallyCreateUMAdminObjects">false</jboolean>
+            <number name="um_loggingOutput" type="java.lang.Integer">0</number>
+            <jboolean name="um_producerMessageTracking">false</jboolean>
+            <jboolean name="um_consumerMessageTracking">false</jboolean>
+            <null name="um_producerIncludedStrings"/>
+            <null name="um_consumerIncludedStrings"/>
+            <value name="providerName">Universal Messaging</value>
+            <value name="providerVersion">10.7.0 Build 141030 September 23 2021</value>
+            <number name="providerMajorVersion" type="java.lang.Integer">10</number>
+            <number name="providerMinorVersion" type="java.lang.Integer">7</number>
+          </record>
+        </array>
+      </record>
+    </IDataXMLCoder>
+
+
